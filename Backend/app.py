@@ -1,5 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from analysis_keyword import extract_channel_keyword
 from youtube import (
     get_channel_content,
     analyze_channel_content,
@@ -50,6 +51,18 @@ def analyze_channel(channel_id: str):
         videos = get_channel_content(channel_id)
         analysis = analyze_channel_content(videos)
         return {"analysis": analysis}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/analyze-channel-keyword")
+def analyze_channel_keyword_endpoint(channel_id: str = Query(..., description="The YouTube channel ID")):
+    """
+    Endpoint that fetches channel content and uses Gemini (via Agno) to extract
+    a single underscore_separated keyword representing the channel's niche.
+    """
+    try:
+        keyword = extract_channel_keyword(channel_id)
+        return {"channel_id": channel_id, "keyword": keyword}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
  
