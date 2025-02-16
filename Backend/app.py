@@ -1,6 +1,12 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
-from instagram import get_instagram_data
+from instagram import (
+    get_instagram_data,
+    get_instagram_login_url,
+    exchange_code_for_token,
+    get_user_data,
+    get_user_media
+)
 from analysis import analyze_content, generate_mind_map
 from trending import get_trending_topics
 from content_gen import generate_content
@@ -24,6 +30,28 @@ app.add_middleware(
 @app.get("/")
 def root():
     return {"message": "Welcome to InstaMind Backend API"}
+
+@app.get("/login")
+def login():
+    """
+    Redirect the user to Instagram for authentication.
+    Returns a URL the frontend can use to redirect the user.
+    """
+    return {"login_url": get_instagram_login_url()}
+
+@app.get("/callback")
+def callback(code: str):
+    """
+    Instagram OAuth callback endpoint.
+    Exchanges the code for an access token and retrieves user info and media.
+    """
+    try:
+        access_token = exchange_code_for_token(code)
+        user_info = get_user_data(access_token)
+        media = get_user_media(access_token)
+        return {"user_info": user_info, "media": media}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/analyze")
 async def analyze_instagram_content(user_id: str):
