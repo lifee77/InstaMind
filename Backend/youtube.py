@@ -5,6 +5,7 @@ from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from dotenv import load_dotenv
 load_dotenv()
+import trending
 
 
 # Get your YouTube API key from environment variables
@@ -110,18 +111,26 @@ def generate_suggestions(niche: str):
 
 def generate_video_script(niche: str):
     """
-    Generates a video script based on the niche.
-    This dummy implementation returns a simple formatted script.
+    Generate a video script for a given niche using Gemini.
     """
-    suggestion = generate_suggestions(niche)
-    script = f"Video Script for {niche.capitalize()}:\n\n"
-    script += "Introduction:\n"
-    script += f"Welcome! Today we're diving into the world of {niche}.\n\n"
-    script += "Main Content:\n"
-    script += f"{suggestion}\n\n"
-    script += "Conclusion:\n"
-    script += "Thanks for watching! Remember to like, comment, and subscribe for more insights.\n"
-    return script
+    try:
+        trending_videos = get_trending_videos(niche)
+
+        if not trending_videos:
+            raise HTTPException(status_code=404, detail=f"No trending videos found for the niche: {niche}")
+
+        trending_video_titles = [item['snippet']['title'] for item in trending_videos]
+        trending_video_descriptions = [item['snippet']['description'] for item in trending_videos]
+
+        script_prompt = trending.generate_script_prompt(niche, trending_video_titles, trending_video_descriptions)
+        script = trending.get_gemini_response(script_prompt)
+
+        if not script:
+            raise HTTPException(status_code=500, detail="Failed to generate script.")
+
+        return {"script": script}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 def pass_script_to_video_generation_tool(script: str):
     """
