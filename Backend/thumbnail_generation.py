@@ -4,6 +4,7 @@ from together import Together
 from dotenv import load_dotenv
 from PIL import Image
 from io import BytesIO
+from trending import generate_thumbnail_prompt
 
 # Load environment variables from .env
 load_dotenv()
