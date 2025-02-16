@@ -2,10 +2,13 @@ import requests
 from fastapi import HTTPException
 from agno.agent import Agent
 from agno.models.google import Gemini
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Set up the Gemini agent for keyword extraction.
 agent = Agent(
-    model=Gemini(id="gemini-2.0-flash-exp"),  # Replace with your actual Gemini model ID.
+    model=Gemini(id="gemini-2.0-flash-exp"),  # Ensure your Gemini model ID is correct
     description="Extract a single concise underscore_separated keyword that represents a YouTube channel's niche based on its video metadata.",
     markdown=True,
 )
@@ -18,6 +21,7 @@ def extract_channel_keyword(channel_id: str, channel_content_url: str = "http://
     """
     params = {"channel_id": channel_id}
     response = requests.get(channel_content_url, params=params)
+    
     if response.status_code != 200:
         raise HTTPException(status_code=response.status_code, detail=f"Failed to fetch channel content: {response.text}")
     
@@ -42,9 +46,11 @@ def extract_channel_keyword(channel_id: str, channel_content_url: str = "http://
     )
     
     try:
-        keyword = agent.get_response(prompt)
-        # Clean the result: trim whitespace, convert to lowercase, replace spaces with underscores.
-        keyword = keyword.strip().lower().replace(" ", "_")
+        # Use the run method to get the response
+        run_response = agent.run(prompt)
+        
+        # Extract the content from the RunResponse object
+        keyword = run_response.content.strip().lower().replace(" ", "_")
         return keyword
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Keyword extraction failed: {str(e)}")
