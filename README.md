@@ -1,79 +1,66 @@
-# InstaMind
+# MediaMind
 
-**InstaMind** is a multimodal AI-powered social media assistant designed for Instagram. It analyzes your existing posts, reels, and captions to identify your niche, generate an interactive mind map of your content ecosystem, fetch trending media from your niche, and provide content suggestions. Whether you need a creative caption, a structured mind map, or a complete content idea, InstaMind is here to help you craft engaging Instagram content.
+**MediaMind** is a multimodal AI-powered media assistant designed to analyze YouTube content. It fetches channel videos, determines their niche, generates a detailed script, and creates an engaging thumbnail—all in one go. Whether you're a content creator looking for inspiration or a strategist optimizing video content, MediaMind provides the tools you need.
 
 ## Features
 
-- **Instagram Content Analysis:**
-  - Fetches your posts, reels, and captions via the Instagram Graph API.
-  - Uses NLP techniques to analyze content and identify your unique niche.
+- **YouTube Channel Analysis:**
+  - Fetches videos from a given YouTube channel.
+  - Uses NLP techniques to analyze video metadata and determine the channel's niche.
+  - Utilizes **Agno** for keyword extraction and niche identification.
 
-- **Mind Map Generation:**
-  - Visualizes your content ecosystem through an interactive mind map.
-  - Helps you understand relationships between topics and content clusters.
+- **Script Generation:**
+  - AI-powered script creation tailored to the channel's niche.
+  - Uses **Gemini AI** to generate prompts and create structured scripts.
+  - Provides a breakdown with introduction, main points, and conclusion.
 
-- **Trending Media Insights:**
-  - Retrieves trending content and topics within your niche.
-  - Integrates data from reputable sources and third-party APIs.
-
-- **Content Suggestions:**
-  - Generates creative content ideas, including captions and example posts.
-  - Utilizes advanced language models for tailored suggestions.
+- **Thumbnail Generation:**
+  - AI-generated thumbnails based on video script analysis.
+  - Uses **Gemini AI** to create visually appealing, high-engagement designs.
 
 - **User-Friendly Dashboard:**
-  - An interactive, responsive UI built with React.
-  - Provides a seamless experience for content planning and strategy.
+  - Built with React for an intuitive and interactive experience.
+  - Minimalist design with clear results presentation.
 
 ## Tech Stack
 
-- **Frontend:**
-  - React for building a dynamic single-page application.
-  - Visualization libraries (D3.js or Cytoscape.js) for rendering mind maps.
-  - Tailwind CSS / Material-UI for modern, responsive styling.
+### Frontend:
+- **React.js** for a dynamic and responsive UI.
+- **Marked.js** for rendering script content in markdown format.
+- **CSS** for a clean, modern design.
 
-- **Backend:**
-  - Python with Flask or FastAPI to build the API server.
-  - Instagram Graph API integration for data retrieval.
-  - NLP libraries such as spaCy, NLTK, and scikit-learn for content analysis.
-  - OpenAI's GPT API (or similar) for generating content suggestions.
-
-- **Database (Optional):**
-  - PostgreSQL or MongoDB for storing user data and caching analysis results.
-
-- **DevOps:**
-  - Docker & Docker Compose for containerization.
-  - CI/CD with GitHub Actions, Travis CI, or similar for streamlined deployment.
+### Backend:
+- **FastAPI** for building a robust API.
+- **YouTube Data API** for fetching channel content.
+- **NLP & AI Models** for niche identification and script generation.
+- **Together.AI API** for generating thumbnails.
+- **Agno & Gemini AI** for keyword generation and script/thumbnail creation.
 
 ## Project Structure
 
 ```
-instamind/
+mediamind/
 ├── backend/
-│   ├── app.py               # Main API server file (Flask/FastAPI)
-│   ├── instagram.py         # Module for Instagram API integration
-│   ├── analysis.py          # Content analysis, niche identification, NLP processing
-│   ├── trending.py          # Module to fetch and process trending data
-│   ├── content_gen.py       # Content generation (using GPT or similar models)
-│   ├── requirements.txt     # Python dependencies list
-│   └── Dockerfile           # Docker configuration for the backend
+│   ├── app.py               # FastAPI server
+│   ├── youtube.py           # Fetch YouTube channel videos
+│   ├── analysis.py          # Content analysis and niche identification
+│   ├── script_gen.py        # AI-generated video scripts
+│   ├── thumbnail_gen.py     # AI-powered thumbnail creation
+│   ├── requirements.txt     # Python dependencies
 ├── frontend/
-│   ├── public/              # Public assets and index.html
+│   ├── public/              # Static assets
 │   ├── src/
-│   │   ├── components/      # React components (dashboard, mind map, content suggestions)
-│   │   ├── App.js           # Main React app component
+│   │   ├── components/      # React components
+│   │   ├── App.js           # Main React app
 │   │   ├── index.js         # Application entry point
-│   │   └── styles.css       # Styling (or integration of a CSS framework)
-│   ├── package.json         # Node.js dependencies for the frontend
-│   └── Dockerfile           # Docker configuration for the frontend
-├── docker-compose.yml       # Docker Compose file to run both backend and frontend
-└── README.md                # Project documentation
+│   │   ├── styles.css       # Styling
+│   ├── package.json         # Frontend dependencies
+└── README.md                # Documentation
 ```
 
 ## Installation
 
 ### Prerequisites
-
-- [Docker](https://www.docker.com/get-started) & [Docker Compose](https://docs.docker.com/compose/install/)
 - [Node.js](https://nodejs.org/) (for frontend development)
 - Python 3.8+ (for backend development)
 
@@ -81,39 +68,45 @@ instamind/
 
 1. **Clone the Repository:**
    ```bash
-   git clone https://github.com/yourusername/instamind.git
-   cd instamind
+   git clone https://github.com/lifee77/MediaMind.git
+   cd MediaMind
    ```
 
-2. **Configure Environment Variables:**
-   - In the `backend` folder, create a `.env` file and add your Instagram API credentials and any other required configuration details.
-
-3. **Build and Run the Containers:**
+2. **Backend Setup:**
    ```bash
-   docker-compose up --build
+   cd backend
+   python -m venv venv
+   source venv/bin/activate  # On Windows use `venv\Scripts\activate`
+   pip install -r requirements.txt
+   python app.py
    ```
-   This command will build and start both the backend and frontend services.
+
+3. **Frontend Setup:**
+   ```bash
+   cd frontend
+   npm install
+   npm start
+   ```
 
 4. **Access the Application:**
-   - **Frontend:** Open your browser and navigate to [http://localhost:3000](http://localhost:3000)
-   - **Backend API:** Accessible at [http://localhost:5000](http://localhost:5000)
+   - **Frontend:** [http://localhost:3000](http://localhost:3000)
+   - **Backend API:** [http://localhost:5000](http://localhost:5000)
 
 ## Usage
 
-1. **Instagram Authentication:**
-   - Log in via Instagram OAuth to grant access to your posts, reels, and captions.
+1. **Enter YouTube Channel ID:**
+   - Provide a valid YouTube channel ID in the UI.
+   - Click "Generate Thumbnail & Script."
 
-2. **Dashboard Overview:**
-   - Explore your content analysis and niche identification results.
-   - Interact with the mind map to visualize connections within your content.
-
-3. **Trending Insights & Content Suggestions:**
-   - Check out the trending topics in your niche.
-   - Receive tailored content suggestions such as creative captions and example posts.
+2. **View Results:**
+   - The app will display:
+     - **Detected Niche** based on video metadata.
+     - **AI-Generated Script** formatted using markdown.
+     - **Generated Thumbnail** from AI-based image generation.
 
 ## Contributing
 
-Contributions are welcome! .
+We welcome contributions! Feel free to submit issues, feature requests, or pull requests.
 
 ## License
 
@@ -121,4 +114,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## Contact
 
-For questions, feedback, or suggestions, please contact khmara@uni.minerva.edu or jeevan@uni.minerva.edu.
+For questions, feedback, or suggestions, please contact:
+- **Daria Khmara** - khmara@uni.minerva.edu
+- **Jeevan Bhatta** - jeevan@uni.minerva.edu
+
