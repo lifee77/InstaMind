@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from analysis_keyword import extract_channel_keyword
+from thumbnail_generation import generate_thumbnail
 from youtube import (
     get_channel_content,
     analyze_channel_content,
@@ -99,14 +100,14 @@ def generate_script(niche: str):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
  
-@app.post("/create-video")
-def create_video(niche: str):
+@app.post("/create-thumbnail")
+def create_script(niche: str):
     """
     Generate a video script and pass it to a video generation tool.
     """
     try:
         script = generate_video_script(niche)
-        response = pass_script_to_video_generation_tool(script)
+        response = generate_thumbnail(script)
         return response
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))

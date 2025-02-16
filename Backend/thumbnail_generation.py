@@ -46,7 +46,3 @@ def generate_thumbnail(prompt: str, output_filename="generated_image.png"):
 
     print(f"Image saved as {output_filename}")
     return output_filename
-
-# Example usage (this line will call the function)
-if __name__ == "__main__":
-    generate_thumbnail("A futuristic AI-powered city skyline with neon lights")
