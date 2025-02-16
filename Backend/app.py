@@ -1,24 +1,23 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from instagram import (
-    get_instagram_data,
-    get_instagram_login_url,
-    exchange_code_for_token,
-    get_user_data,
-    get_user_media
+from youtube import (
+    get_channel_content,
+    analyze_channel_content,
+    get_trending_videos,
+    generate_suggestions,
+    generate_video_script,
+    pass_script_to_video_generation_tool,
 )
-from analysis import analyze_content, generate_mind_map
-from trending import get_trending_topics
-from content_gen import generate_content
+from dotenv import load_dotenv
+load_dotenv()
 
-app = FastAPI(title="InstaMind Backend API", version="0.1.0")
+ 
+app = FastAPI(title="YouTube Content Analysis API", version="0.1.0")
 
 # Allow CORS for the frontend (adjust origins as needed)
 origins = [
     "http://localhost:3000",
-    # Add additional origins if necessary
 ]
-
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -26,77 +25,79 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+ 
 @app.get("/")
 def root():
-    return {"message": "Welcome to InstaMind Backend API"}
-
-@app.get("/login")
-def login():
+    return {"message": "Welcome to the YouTube Content Analysis API"}
+ 
+@app.get("/channel-content")
+def channel_content(channel_id: str):
     """
-    Redirect the user to Instagram for authentication.
-    Returns a URL the frontend can use to redirect the user.
-    """
-    return {"login_url": get_instagram_login_url()}
-
-@app.get("/callback")
-def callback(code: str):
-    """
-    Instagram OAuth callback endpoint.
-    Exchanges the code for an access token and retrieves user info and media.
+    Retrieve videos from a YouTube channel by its channel_id.
     """
     try:
-        access_token = exchange_code_for_token(code)
-        user_info = get_user_data(access_token)
-        media = get_user_media(access_token)
-        return {"user_info": user_info, "media": media}
+        videos = get_channel_content(channel_id)
+        return {"videos": videos}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/analyze")
-async def analyze_instagram_content(user_id: str):
+ 
+@app.get("/analyze-channel")
+def analyze_channel(channel_id: str):
     """
-    Analyze Instagram content for a given user.
+    Analyze a channel's content to determine the user's niche.
     """
     try:
-        # Fetch user data from Instagram API (dummy data for now)
-        user_data = get_instagram_data(user_id)
-        
-        # Analyze content to identify the niche and extract keywords
-        analysis_results = analyze_content(user_data)
-        
-        # Generate a simple mind map structure based on the analysis
-        mind_map = generate_mind_map(analysis_results)
-        
-        return {
-            "analysis": analysis_results,
-            "mind_map": mind_map
-        }
+        videos = get_channel_content(channel_id)
+        analysis = analyze_channel_content(videos)
+        return {"analysis": analysis}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-
+ 
 @app.get("/trending")
-async def trending_topics(niche: str):
+def trending(niche: str):
     """
-    Retrieve trending topics for a given niche.
-    """
-    try:
-        trends = get_trending_topics(niche)
-        return {"trends": trends}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-
-@app.get("/generate-content")
-async def content_suggestion(niche: str):
-    """
-    Generate content suggestions based on the user's niche.
+    Retrieve trending videos for a given niche.
     """
     try:
-        suggestion = generate_content(niche)
-        return {"suggestion": suggestion}
+        trending_items = get_trending_videos(niche)
+        return {"trending": trending_items}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-        
-if __name__ == '__main__':
+ 
+@app.get("/suggestions")
+def suggestions(niche: str):
+    """
+    Generate content suggestions based on the niche.
+    """
+    try:
+        sugg = generate_suggestions(niche)
+        return {"suggestions": sugg}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+ 
+@app.get("/generate-script")
+def generate_script(niche: str):
+    """
+    Generate a video script for a given niche.
+    """
+    try:
+        script = generate_video_script(niche)
+        return {"script": script}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+ 
+@app.post("/create-video")
+def create_video(niche: str):
+    """
+    Generate a video script and pass it to a video generation tool.
+    """
+    try:
+        script = generate_video_script(niche)
+        response = pass_script_to_video_generation_tool(script)
+        return response
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+ 
+if __name__ == "__main__":
     import uvicorn
     uvicorn.run(app, host="0.0.0.0", port=5000)

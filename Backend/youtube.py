@@ -3,6 +3,9 @@ import re
 import requests
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
+from dotenv import load_dotenv
+load_dotenv()
+
 
 # Get your YouTube API key from environment variables
 YOUTUBE_API_KEY = os.environ.get("YOUTUBE_API_KEY")
