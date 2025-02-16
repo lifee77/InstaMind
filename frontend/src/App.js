@@ -1,20 +1,26 @@
 import React from 'react';
-import YouTubeAnalyzer from './components/YouTubeAnalyzer';
+import ChannelContent from './components/ChannelContent';
+import ChannelAnalyzer from './components/ChannelAnalyzer';
+import KeywordAnalyzer from './components/KeywordAnalyzer';
+import Trending from './components/Trending';
+import ScriptGenerator from './components/ScriptGenerator';
+import ThumbnailCreator from './components/ThumbnailCreator';
 
 function App() {
   return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="container mx-auto py-4">
-        </div>
-      </header>
-      
-      <main className="container mx-auto py-8">
-        <YouTubeAnalyzer />
-      </main>
-      
-      <footer className="bg-white border-t mt-auto">
-      </footer>
+    <div style={{ padding: '1rem' }}>
+      <h1>YouTube Content Analysis Dashboard</h1>
+      <ChannelContent />
+      <hr />
+      <ChannelAnalyzer />
+      <hr />
+      <KeywordAnalyzer />
+      <hr />
+      <Trending />
+      <hr />
+      <ScriptGenerator />
+      <hr />
+      <ThumbnailCreator />
     </div>
   );
 }
