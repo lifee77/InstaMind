@@ -45,4 +45,4 @@ def generate_thumbnail(prompt: str, output_filename="generated_image.png"):
     image.save(output_filename)
 
     print(f"Image saved as {output_filename}")
-    return output_filename
+    return f"data:image/png;base64,{image_data}"  # Return Base64

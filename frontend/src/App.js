@@ -1,26 +1,22 @@
 import React from 'react';
-import ChannelContent from './components/ChannelContent';
-import ChannelAnalyzer from './components/ChannelAnalyzer';
-import KeywordAnalyzer from './components/KeywordAnalyzer';
-import Trending from './components/Trending';
-import ScriptGenerator from './components/ScriptGenerator';
-import ThumbnailCreator from './components/ThumbnailCreator';
+import ThumbnailAndScriptGenerator from './components/ThumbnailAndScriptGenerator';
 
 function App() {
   return (
-    <div style={{ padding: '1rem' }}>
-      <h1>YouTube Content Analysis Dashboard</h1>
-      <ChannelContent />
-      <hr />
-      <ChannelAnalyzer />
-      <hr />
-      <KeywordAnalyzer />
-      <hr />
-      <Trending />
-      <hr />
-      <ScriptGenerator />
-      <hr />
-      <ThumbnailCreator />
+    <div className="min-h-screen bg-gray-50">
+      <header className="bg-white shadow-sm">
+        <div className="container mx-auto py-4">
+          <h1>YouTube Channel Thumbnail & Script Generator</h1>
+        </div>
+      </header>
+      
+      <main className="container mx-auto py-8">
+        <ThumbnailAndScriptGenerator />
+      </main>
+      
+      <footer className="bg-white border-t mt-auto">
+        <div className="container mx-auto py-4 text-center">© 2025 Dasha and Jeevan</div>
+      </footer>
     </div>
   );
 }
